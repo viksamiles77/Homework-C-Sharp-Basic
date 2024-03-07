@@ -7,13 +7,13 @@ namespace Task_1
     {
         static void Main(string[] args)
         {
-            string birthdayIput;
+            string birthdayInput;
             bool validInput = false;
 
             while (!validInput)
             {
                 Console.WriteLine("Enter your birthday date (DD MM YYYY)");
-                string birthdayInput = Console.ReadLine();
+                birthdayInput = Console.ReadLine();
 
                 if (IsValidDateFormat(birthdayInput))
                 {
