@@ -10,6 +10,7 @@
     {
         static void Main(string[] args)
         {
+            // generates 20 random atm users
             Random random = new Random();
             Customer[] customers = new Customer[20];
 
@@ -18,15 +19,38 @@
                 string name = "Customer" + (i + 1);
                 long cardNumber = GenerateCardNumber(random);
                 int pin = random.Next(1000, 9999);
-                double balance = random.NextDouble() * 10000; // Generate random balance up to $10,000
+                double balance = Math.Round(random.NextDouble() * 10000, 2); // Generate random balance up to $10,000
 
                 customers[i] = new Customer(name, cardNumber, pin, balance);
-                Console.WriteLine($"Created Customer: {name}, Card Number: {cardNumber}, Balance: {balance}$");
+                Console.WriteLine($"Created Customer: {name}, Card Number: {cardNumber}, Balance: {balance}$, PIN {pin}");
             }
 
-            Console.WriteLine("Select type of transaction: 0 - Check balance, 1 - Deposit cash, 2 - Withdraw cash");
-            string transactionType = Console.ReadLine();
-            DoTransaction(customers, (Transaction)int.Parse(transactionType));
+            bool exitATM = false;
+
+            while (!exitATM)
+            {
+                Console.WriteLine("Select type of transaction: 0 - Check balance, 1 - Deposit cash, 2 - Withdraw cash");
+
+                string transactionTypeInput = Console.ReadLine();
+                if (!int.TryParse(transactionTypeInput, out int transactionTypeInt) ||
+                    transactionTypeInt < 0 || transactionTypeInt > 2)
+                {
+                    Console.WriteLine("Invalid transaction type! Please enter a number between 0 and 2.");
+                    continue; 
+                }
+
+                Transaction transactionType = (Transaction)transactionTypeInt;
+                DoTransaction(customers, transactionType);
+
+                // we are asking the user if they want to perform another transaction on the atm
+                Console.WriteLine("Do you want to perform another transaction? (yes/no)");
+                string response = Console.ReadLine().ToLower();
+
+                if (response != "yes")
+                {
+                    exitATM = true;
+                }
+            }
         }
         private static long GenerateCardNumber(Random random)
         {

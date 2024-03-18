@@ -28,7 +28,7 @@
             if (Balance >= amount)
             {
                 Balance -= amount;
-                Console.WriteLine($"You withdrew {amount}$ left in your account!");
+                Console.WriteLine($"You withdrew {amount}$ from your account!");
                 Console.WriteLine($"You have {Balance}$ left in your account!");
             }
             else
@@ -40,7 +40,7 @@
         public void Deposit(float amount)
         {
             Balance += amount;
-            Console.WriteLine($"You deposited {amount}$ left in your account!");
+            Console.WriteLine($"You deposited {amount}$ in your account!");
             Console.WriteLine($"You have {Balance}$ left in your account!");
         }
     }
