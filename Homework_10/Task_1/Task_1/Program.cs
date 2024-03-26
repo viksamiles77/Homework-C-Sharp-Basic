@@ -1,241 +1,103 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Task_1
+﻿namespace Task_1
 {
-    public enum Role
-    {
-        Admin,
-        Trainer,
-        Student
-    }
-
     internal class Program
     {
-        static List<string> trainers = new List<string>
-        {
-            "Mr. Smith",
-            "Ms. Johnson",
-            "Dr. Patel",
-            "Mrs. Garcia",
-            "Professor Williams",
-            "Ms. Thompson",
-            "Mr. Nguyen",
-            "Dr. Lee",
-            "Mrs. Rodriguez",
-            "Professor Davis"
-        };
-
-        static List<string> admins = new List<string>
-        {
-            "Mrs. Anderson",
-            "Mr. Thompson",
-            "Dr. Martinez",
-            "Ms. White",
-            "Mr. Johnson",
-            "Mr. Garcia",
-            "Dr. Taylor",
-            "Mrs. Brown",
-            "Mr. Lee",
-            "Ms. Clark"
-        };
-
-        static List<string> students = new List<string>
-        {
-            "John Smith",
-            "Emily Johnson",
-            "Michael Williams",
-            "Jessica Brown",
-            "Daniel Martinez",
-            "Sarah Taylor",
-            "David Garcia",
-            "Amanda Nguyen",
-            "Robert Lee",
-            "Olivia Clark"
-        };
-
         static void Main(string[] args)
         {
-            string userName;
-            do
+            AcademyManager academyManager = new AcademyManager();
+
+            Admin admin1 = new Admin("admin1");
+            academyManager.Admins.Add(new Admin("admin1"));
+            Admin admin2 = new Admin("admin2");
+            academyManager.Admins.Add(new Admin("admin2"));
+
+            Trainer trainer1 = new Trainer("trainer1");
+            academyManager.Trainers.Add(new Trainer("trainer1"));
+            Trainer trainer2 = new Trainer("trainer2");
+            academyManager.Trainers.Add(new Trainer("trainer2"));
+
+            Student student1 = new Student("student1");
+            academyManager.Students.Add(new Student("student1"));
+            student1.CurrentSubject = new Subject("Math");
+            student1.Grades.Add(student1.CurrentSubject, new List<int> { 2, 4, 5 });
+
+            Student student2 = new Student("student2");
+            academyManager.Students.Add(new Student("student2"));
+            student2.CurrentSubject = new Subject("Science");
+            student2.Grades.Add(student2.CurrentSubject, new List<int> { 4, 2, 3 });
+
+            Console.WriteLine("Welcome to the Academy Management App!");
+
+            Console.Write("Enter your username: ");
+            string username = Console.ReadLine();
+
+            User user = academyManager.GetUser(username);
+            if (user == null)
             {
-                Console.Write("Please enter your name: ");
-                userName = Console.ReadLine().Trim();
-            } while (string.IsNullOrWhiteSpace(userName));
+                Console.WriteLine("User not found.");
+                Console.WriteLine("Select your role:");
+                Console.WriteLine("1. Admin");
+                Console.WriteLine("2. Trainer");
+                Console.WriteLine("3. Student");
+                Console.Write("Enter the number corresponding to your role: ");
+                int roleChoice = int.Parse(Console.ReadLine());
+                RoleEnum role = (RoleEnum)(roleChoice - 1);
 
-            Role userRole = GetUserRole();
-
-            switch (userRole)
-            {
-                case Role.Admin:
-                    Console.WriteLine($"Welcome, {userName}! Role: Admin");
-                    AdminActions();
-                    break;
-                case Role.Trainer:
-                    Console.WriteLine($"Welcome, {userName}! Role: Trainer");
-                    trainers.Add(userName);
-                    break;
-                case Role.Student:
-                    Console.WriteLine($"Welcome, {userName}! Role: Student");
-                    students.Add(userName);
-                    break;
-                default:
-                    Console.WriteLine("Invalid role!");
-                    break;
-            }
-        }
-
-        static Role GetUserRole()
-        {
-            Console.WriteLine("Select your role: \n 1. Admin \n 2. Trainer \n 3. Student");
-            int choice;
-            while (!int.TryParse(Console.ReadLine(), out choice) || choice < 1 || choice > 3)
-            {
-                Console.WriteLine("Invalid input, please try again!");
-            }
-
-            return (Role)(choice - 1);
-        }
-
-        static void AdminActions()
-        {
-            Console.WriteLine("What do you want to do?");
-            Console.WriteLine("1. Add trainer");
-            Console.WriteLine("2. Remove trainer");
-            Console.WriteLine("3. Add student");
-            Console.WriteLine("4. Remove student");
-            Console.WriteLine("5. Add admin");
-            Console.WriteLine("6. Remove admin");
-
-            int choice;
-            while (!int.TryParse(Console.ReadLine(), out choice) || choice < 1 || choice > 6)
-            {
-                Console.WriteLine("Invalid input, please try again!");
-            }
-
-            switch (choice)
-            {
-                case 1:
-                    AddTrainer();
-                    break;
-                case 2:
-                    RemoveTrainer();
-                    break;
-                case 3:
-                    AddStudent();
-                    break;
-                case 4:
-                    RemoveStudent();
-                    break;
-                case 5:
-                    AddAdmin();
-                    break;
-                case 6:
-                    RemoveAdmin();
-                    break;
-                default:
-                    Console.WriteLine("Invalid choice!");
-                    break;
-            }
-        }
-
-        static void AddTrainer()
-        {
-            string newTrainerName;
-            do
-            {
-                Console.Write("Please enter the name of the new trainer: ");
-                newTrainerName = Console.ReadLine().Trim();
-            } while (string.IsNullOrWhiteSpace(newTrainerName));
-
-            trainers.Add(newTrainerName);
-            Console.WriteLine("Trainer added successfully!");
-        }
-
-        static void RemoveTrainer()
-        {
-            Console.WriteLine("Current trainers:");
-            foreach (var trainer in trainers)
-            {
-                Console.WriteLine(trainer);
+                switch (role)
+                {
+                    case RoleEnum.Admin:
+                        Admin admin = new Admin(username);
+                        admin.AddAdmin(username);
+                        break;
+                    case RoleEnum.Trainer:
+                        Trainer trainer = new Trainer(username);
+                        //trainer.AddTrainer(username);
+                        break;
+                    case RoleEnum.Student:
+                        Student student = new Student(username);
+                        //student.AddStudent(username);
+                        break;
+                    default:
+                        Console.WriteLine("Invalid role selection.");
+                        break;
+                }
             }
 
-            Console.Write("Enter the index of the trainer you want to remove: ");
-            int index;
-            while (!int.TryParse(Console.ReadLine(), out index) || index < 0 || index >= trainers.Count)
+            user = academyManager.GetUser(username);
+
+            if (user != null)
             {
-                Console.WriteLine("Invalid index, please try again!");
+                switch (user.Role)
+                {
+                    case RoleEnum.Admin:
+                        Console.WriteLine("Admin actions:");
+                        Console.WriteLine("1. Add admin \n 2. Remove admin \n 3. Add trainer \n 4. Remove trainer \n 5. Add student \n 6. Remove student");
+                        break;
+                    case RoleEnum.Trainer:
+                        Console.WriteLine("Trainer actions:");
+                        Console.WriteLine("1. Display students \n 2. Display subjects");
+                        break;
+                    case RoleEnum.Student:
+                        Console.WriteLine("Student actions:");
+                        Student student = academyManager.GetUser(username) as Student;
+                        if (student != null)
+                        {
+                            student.ShowStudentInfo(student);
+                        }
+                        else
+                        {
+                            Console.WriteLine("Student not found.");
+                        }
+                        break;
+                    default:
+                        Console.WriteLine("Invalid role selection.");
+                        break;
+                }
             }
-
-            string removedTrainer = trainers[index];
-            trainers.RemoveAt(index);
-            Console.WriteLine($"{removedTrainer} has been removed from the list of trainers.");
-        }
-
-        static void AddStudent()
-        {
-            string newStudentName;
-            do
+            else
             {
-                Console.Write("Please enter the name of the new student: ");
-                newStudentName = Console.ReadLine().Trim();
-            } while (string.IsNullOrWhiteSpace(newStudentName));
-
-            students.Add(newStudentName);
-            Console.WriteLine("Student added successfully!");
-        }
-
-        static void RemoveStudent()
-        {
-            Console.WriteLine("Current students:");
-            foreach (var student in students)
-            {
-                Console.WriteLine(student);
+                Console.WriteLine("User not found.");
             }
-
-            Console.Write("Enter the index of the student you want to remove: ");
-            int index;
-            while (!int.TryParse(Console.ReadLine(), out index) || index < 0 || index >= students.Count)
-            {
-                Console.WriteLine("Invalid index, please try again!");
-            }
-
-            string removedStudent = students[index];
-            students.RemoveAt(index);
-            Console.WriteLine($"{removedStudent} has been removed from the list of students.");
-        }
-
-        static void AddAdmin()
-        {
-            string newAdminName;
-            do
-            {
-                Console.Write("Please enter the name of the new admin: ");
-                newAdminName = Console.ReadLine().Trim();
-            } while (string.IsNullOrWhiteSpace(newAdminName));
-
-            admins.Add(newAdminName);
-            Console.WriteLine("Admin added successfully!");
-        }
-
-        static void RemoveAdmin()
-        {
-            Console.WriteLine("Current admins:");
-            foreach (var admin in admins)
-            {
-                Console.WriteLine(admin);
-            }
-
-            Console.Write("Enter the index of the admin you want to remove: ");
-            int index;
-            while (!int.TryParse(Console.ReadLine(), out index) || index < 0 || index >= admins.Count)
-            {
-                Console.WriteLine("Invalid index, please try again!");
-            }
-
-            string removedAdmin = admins[index];
-            admins.RemoveAt(index);
-            Console.WriteLine($"{removedAdmin} has been removed from the list of admins.");
         }
     }
 }
