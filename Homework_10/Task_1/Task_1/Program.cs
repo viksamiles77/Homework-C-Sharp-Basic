@@ -1,102 +1,74 @@
-﻿namespace Task_1
+﻿using Models;
+
+namespace Task_1
 {
     internal class Program
     {
         static void Main(string[] args)
         {
-            AcademyManager academyManager = new AcademyManager();
+            Admin admin = new Admin("Admin1");
+            Admin admin2 = new Admin("Admin2");
+            Trainer trainer = new Trainer("Trainer1");
+            Trainer trainer2 = new Trainer("Trainer2");
+            Student student1 = new Student("Student1", "Math", new Dictionary<string, int> { { "Math", 100 }, { "Science", 90 } });
+            Student student2 = new Student("Student2", "Science", new Dictionary<string, int> { { "Chemistry", 80 }, { "Physics", 95 } });
 
-            Admin admin1 = new Admin("admin1");
-            academyManager.Admins.Add(new Admin("admin1"));
-            Admin admin2 = new Admin("admin2");
-            academyManager.Admins.Add(new Admin("admin2"));
+            Console.Write("Enter your name: ");
+            string name = Console.ReadLine();
+            Console.Write("Select your role (admin/trainer/student): ");
+            string role = Console.ReadLine();
 
-            Trainer trainer1 = new Trainer("trainer1");
-            academyManager.Trainers.Add(new Trainer("trainer1"));
-            Trainer trainer2 = new Trainer("trainer2");
-            academyManager.Trainers.Add(new Trainer("trainer2"));
-
-            Student student1 = new Student("student1");
-            academyManager.Students.Add(new Student("student1"));
-            student1.CurrentSubject = new Subject("Math");
-            student1.Grades.Add(student1.CurrentSubject, new List<int> { 2, 4, 5 });
-
-            Student student2 = new Student("student2");
-            academyManager.Students.Add(new Student("student2"));
-            student2.CurrentSubject = new Subject("Science");
-            student2.Grades.Add(student2.CurrentSubject, new List<int> { 4, 2, 3 });
-
-            Console.WriteLine("Welcome to the Academy Management App!");
-
-            Console.Write("Enter your username: ");
-            string username = Console.ReadLine();
-
-            User user = academyManager.GetUser(username);
-            if (user == null)
+            if (role.ToLower() == "admin")
             {
-                Console.WriteLine("User not found.");
-                Console.WriteLine("Select your role:");
-                Console.WriteLine("1. Admin");
-                Console.WriteLine("2. Trainer");
-                Console.WriteLine("3. Student");
-                Console.Write("Enter the number corresponding to your role: ");
-                int roleChoice = int.Parse(Console.ReadLine());
-                RoleEnum role = (RoleEnum)(roleChoice - 1);
-
-                switch (role)
+                Console.Write("Enter 'add' to add user or 'remove' to remove user: ");
+                string adminOption = Console.ReadLine();
+                if (adminOption.ToLower() == "add")
                 {
-                    case RoleEnum.Admin:
-                        Admin admin = new Admin(username);
-                        admin.AddAdmin(username);
-                        break;
-                    case RoleEnum.Trainer:
-                        Trainer trainer = new Trainer(username);
-                        //trainer.AddTrainer(username);
-                        break;
-                    case RoleEnum.Student:
-                        Student student = new Student(username);
-                        //student.AddStudent(username);
-                        break;
-                    default:
-                        Console.WriteLine("Invalid role selection.");
-                        break;
+                    Console.Write("Enter user type (admin/trainer/student): ");
+                    string userType = Console.ReadLine();
+                    Console.Write("Enter username: ");
+                    string username = Console.ReadLine();
+                    admin.AddUser(userType, username);
+                }
+                else if (adminOption.ToLower() == "remove")
+                {
+                    Console.Write("Enter user type (admin/trainer/student): ");
+                    string userType = Console.ReadLine();
+                    Console.Write("Enter username: ");
+                    string username = Console.ReadLine();
+                    admin.RemoveUser(userType, username);
+                }
+                else
+                {
+                    Console.WriteLine("Invalid option for admin.");
                 }
             }
-
-            user = academyManager.GetUser(username);
-
-            if (user != null)
+            else if (role.ToLower() == "trainer")
             {
-                switch (user.Role)
+                Console.Write("Enter 'students' to view students or 'subjects' to view subjects: ");
+                string trainerOption = Console.ReadLine();
+                if (trainerOption.ToLower() == "students")
                 {
-                    case RoleEnum.Admin:
-                        Console.WriteLine("Admin actions:");
-                        Console.WriteLine("1. Add admin \n 2. Remove admin \n 3. Add trainer \n 4. Remove trainer \n 5. Add student \n 6. Remove student");
-                        break;
-                    case RoleEnum.Trainer:
-                        Console.WriteLine("Trainer actions:");
-                        Console.WriteLine("1. Display students \n 2. Display subjects");
-                        break;
-                    case RoleEnum.Student:
-                        Console.WriteLine("Student actions:");
-                        Student student = academyManager.GetUser(username) as Student;
-                        if (student != null)
-                        {
-                            student.ShowStudentInfo(student);
-                        }
-                        else
-                        {
-                            Console.WriteLine("Student not found.");
-                        }
-                        break;
-                    default:
-                        Console.WriteLine("Invalid role selection.");
-                        break;
+                    trainer.ViewStudents(new List<Student> { student1, student2 });
                 }
+                else if (trainerOption.ToLower() == "subjects")
+                {
+                    Dictionary<string, int> subjects = new Dictionary<string, int> { { "Math", 2 }, { "Science", 1 } };
+                    trainer.ViewSubjects(subjects);
+                }
+                else
+                {
+                    Console.WriteLine("Invalid option for trainer.");
+                }
+            }
+            else if (role.ToLower() == "student")
+            {
+                student1.ViewCurrentSubject();
+                student1.ViewGrades();
             }
             else
             {
-                Console.WriteLine("User not found.");
+                Console.WriteLine("Invalid role.");
             }
         }
     }
