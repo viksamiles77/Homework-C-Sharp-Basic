@@ -1,4 +1,4 @@
-# Qinshift Homework Repository (JavaScript Basic)
+# Qinshift Homework Repository (C# Basic)
 Here is all my homework for this subject, showcasing my skills throughout the academy.
 
 Homework List
